@@ -70,7 +70,7 @@ namespace Task2
             return GetEnumerator();
         }
 
-        private struct QueueIterator : IEnumerator<T>
+        public struct QueueIterator : IEnumerator<T>
         {
             private readonly CustomQueue<T> _collection;
             private int _currentIndex;
