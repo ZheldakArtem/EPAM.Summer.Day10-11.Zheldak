@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Task2.Test
 {
-    public class Class1
+    public class QueueTest
     {
+
     }
 }

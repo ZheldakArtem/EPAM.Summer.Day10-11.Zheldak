@@ -17,6 +17,7 @@ namespace Task1.Test
         [TestCase(0, new int[] { })]
         public void GetFibonacciNumbersTest(int count, IEnumerable<int> fibonacciNumbers)
         {
+          
             var result = Fibonacci.GetFibonacci(count).ToArray();
 
             CollectionAssert.AreEqual(fibonacciNumbers.ToArray(), result);
