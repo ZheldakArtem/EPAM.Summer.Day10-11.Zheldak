@@ -14,6 +14,7 @@ namespace Task1.Test
         [TestCase(5, new int[] { 1, 1, 2, 3, 5 })]
         [TestCase(1, new int[] { 1 })]
         [TestCase(6, new int[] { 1, 1, 2, 3, 5, 8 })]
+        [TestCase(0, new int[] { })]
         public void GetFibonacciNumbersTest(int count, IEnumerable<int> fibonacciNumbers)
         {
             var result = Fibonacci.GetFibonacci(count).ToArray();
