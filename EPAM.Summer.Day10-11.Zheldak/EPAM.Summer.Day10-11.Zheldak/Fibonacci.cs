@@ -16,6 +16,11 @@ namespace Task1
         /// <returns>Fibonacci numbers</returns>
         public static IEnumerable<int> GetFibonacci(int count)
         {
+            if (count < 0)
+            {
+                throw new ArgumentException("count is negative");
+            }
+
             if (count != 0)
             {
                 int x = 0;
