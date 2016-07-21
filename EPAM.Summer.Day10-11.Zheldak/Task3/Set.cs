@@ -9,37 +9,123 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
-    public class Set<T> : IEquatable<Set<T>>, IEnumerable<T> where T : class, IEquatable<T>, IFormattable
+    public class Set<T> : IEnumerable<T> where T : class
     {
-        private T[] _array;
-        public int Count => _array.Length;
+        private readonly IEqualityComparer<T> _equalityComparer;
+        private ISet<int> d=new HashSet<int>();
+        private Hashtable _hashTable;
 
-        public Set(T[] array)
+        public int Count => _hashTable.Count;
+
+        public Set() : this(EqualityComparer<T>.Default)
         {
-            if (ReferenceEquals(array, null))
+
+        }
+
+        public Set(IEqualityComparer<T> equalityComparer)
+        {
+            if (ReferenceEquals(equalityComparer, null))
             {
-                _array = null;
+                throw new ArgumentNullException();
+            }
+            _equalityComparer = equalityComparer;
+            _hashTable = new Hashtable((IEqualityComparer)_equalityComparer);
+        }
+
+        public Set(IEnumerable<T> enumerable) : this(enumerable, EqualityComparer<T>.Default)
+        {
+
+        }
+
+        public Set(IEnumerable<T> enumerable, IEqualityComparer<T> equalityComparer) : this(equalityComparer)
+        {
+            if (ReferenceEquals(enumerable, null))
+            {
+                throw new ArgumentNullException();
+            }
+            foreach (T item in enumerable)
+            {
+                _hashTable.Add(item, item);
+            }
+        }
+        /// <summary>
+        ///  Modifies the current collections to contain only elements that are present in that object and in the specified collection.
+        /// </summary>
+        /// <param name="other">The collection to compare to the current</param>
+        public void Intersection(Set<T> other)
+        {
+            IEnumerable<T> bigger, smaller;
+            if (Count > other.Count)
+            {
+                bigger = this;
+                smaller = other;
             }
             else
             {
-                _array = new T[array.Length];
-                Array.Copy(array, _array, array.Length);
+                bigger = other;
+                smaller =this;
             }
-
-        }
-        /// <summary>
-        /// Adds an item to collection
-        /// </summary>
-        /// <param name="elem">The object to add to the collection</param>
-        public void Add(T elem)
-        {
-            if (_array.Any(item => item.Equals(elem)))
+            _hashTable = new Hashtable((IEqualityComparer)_equalityComparer);
+            foreach (var item in smaller)
             {
-                throw new ArgumentException();
+                if (bigger.Contains(item))
+                {
+                    _hashTable.Add(item, item);
+                }
             }
+        }
 
-            Array.Resize(ref _array, _array.Length + 1);
-            _array[_array.Length - 1] = elem;
+        /// <summary>
+        /// Union collections
+        /// </summary>
+        /// <param name="other"></param>
+        public void Union(Set<T> other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                throw new ArgumentNullException();
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return;
+            }
+            foreach (var item in other)
+            {   if(!_hashTable.Contains(item))
+                _hashTable.Add(item, item);
+            }
+        }
+
+        /// <summary>
+        /// Find the difference of two sets.
+        /// </summary>
+        public void Difference(Set<T> other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                throw new ArgumentNullException();
+            }
+            if (ReferenceEquals(this, other))
+                Clear();
+            foreach (T item in other)
+            {
+                if (_hashTable.Contains(item))
+                {
+                    _hashTable.Remove(item);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add item to collection
+        /// </summary>
+        /// <param name="item">Element to added</param>
+        public void Add(T item)
+        {
+            if (item == null)
+                throw new ArgumentNullException();
+            if (_hashTable.Contains(item))
+                throw new ArgumentException();
+            _hashTable.Add(item, item);
         }
         /// <summary>
         /// Removes element from a collection
@@ -47,144 +133,52 @@ namespace Task3
         /// <param name="elem">Removing element</param>
         public void Remove(T elem)
         {
-            T[] result = new T[_array.Length];
-            int i = 0;
-
-            foreach (T item in _array)
+            if (_hashTable.Contains(elem))
             {
-                if (!elem.Equals(item))
-                {
-                    result[i] = item;
-                    i++;
-                }
+                _hashTable.Remove(elem);
             }
-            Array.Resize(ref result, i);
-            Array.Resize(ref _array, i);
-
-            Array.Copy(result, _array, 0);
         }
+
         /// <summary>
-        /// Removes all elements from a collection
+        /// Clear collection
         /// </summary>
         public void Clear()
         {
-            for (int i = 0; i < _array.Length; i++)
-            {
-                _array[i] = default(T);
-            }
-        }
-
-        public static Set<T> Unoin(Set<T> first, Set<T> second)
-        {
-            T[] newArray = new T[first.Count + second.Count];
-            int counter = 0;
-            Array.Copy(first._array, newArray, first.Count);
-            for (int i = 0; i < second.Count; i++)
-            {
-                if (!first.Contains(second._array[i]))
-                {
-                    counter++;
-                    newArray[first.Count + counter] = second._array[i];
-                }
-            }
-            Array.Resize(ref newArray, first.Count + counter + 1);
-            return new Set<T>(newArray);
+            _hashTable.Clear();
         }
 
         /// <summary>
-        /// Finds the intersection of two sets.
+        /// Check if item contains in set.
         /// </summary>
-        /// <returns>Returns a new collection of type of set.</returns>
-        public static Set<T> Intersection(Set<T> first, Set<T> second)
+        /// <param name="item">Item to be checked.</param>
+        /// <returns>True if set contains item, else false.</returns>
+        public bool Contains(T item)
         {
-            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
-            {
-                return new Set<T>(null);
-            }
-            if (first == second)
-            {
-                return first;
-            }
-            int counter = 0;
-            T[] tempArray = new T[first.Count + second.Count];
-            foreach (var item in first)
-            {
-                if (!second.Contains(item)) continue;
-                tempArray[counter] = item;
-                counter++;
-            }
-            Array.Resize(ref tempArray, counter + 1);
-            return new Set<T>(tempArray);
+            return _hashTable.Contains(item);
         }
-
-        /// <summary>
-        /// Find the difference of two sets.
-        /// </summary>
-        /// <returns>Returns a new collection of type of set.</returns>
-        public static Set<T> Difference(Set<T> first, Set<T> second)
-        {
-            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
-            {
-                return new Set<T>(null);
-            }
-            if (first == second)
-            {
-                return new Set<T>(null);
-            }
-            int counter = 0;
-            T[] tempArray = new T[first.Count];
-
-            foreach (var item in first)
-            {
-
-                if (!second.Contains(item))
-                {
-                    tempArray[counter] = item;
-                }
-            }
-
-            return new Set<T>(tempArray);
-        }
-
         /// <summary>Indicates whether the current object is equal to another object of the set.</summary>
         /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         /// <param name="other">An object to compare with this object.</param>
         public bool Equals(Set<T> other)
         {
-            if (ReferenceEquals(null, other) || other.Count != Count)
+            if (ReferenceEquals(null, other) || other.ToArray().Count() != Count)
                 return false;
-            for (int i = 0; i < Count; i++)
+            foreach (var item in other)
             {
-                if (other._array[i] != this._array[i])
-                {
+                if (_hashTable.Contains(item))
                     return false;
-                }
             }
             return true;
-        }
-
-        /// <summary>Determines whether the specified object is equal to the set.</summary>
-        /// <returns>true if the specified object  is equal to the set; otherwise, false.</returns>
-        /// <param name="obj">The object to compare with the set. </param>
-        public override bool Equals(object obj)
-        {
-
-            if (ReferenceEquals(null, obj))
-                return false;
-            Set<T> set = obj as Set<T>;
-            if (ReferenceEquals(null, set))
-            {
-                return false;
-            }
-            return Equals(set);
         }
 
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
         /// <returns>An object that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            int[] i;
-            return ((IEnumerable<T>)_array).GetEnumerator();
+            foreach (var item in _hashTable.Values)
+            {
+                yield return (T)item;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -196,48 +190,15 @@ namespace Task3
         /// <returns>A string that represents the set.</returns>
         public override string ToString()
         {
-            if (ReferenceEquals(null, _array))
+            if (ReferenceEquals(null, _hashTable))
                 throw new ArgumentException();
             string result = " ";
-            foreach (var item in _array)
+            foreach (var item in _hashTable.Values)
             {
                 result += item + " ";
             }
 
             return result;
         }
-
-        /// <summary>Overriding functions which get hashcode. </summary>
-        /// <returns>A hash code of collection.</returns>
-        public override int GetHashCode()
-        {
-            return _array.Sum(item => item.GetHashCode());
-        }
-
-        /// <summary>
-        /// Operator == overloading 
-        /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="rhs"></param>
-        /// <returns>True if <param name="rhs"></param> equals <param name="lhs"></param> </returns>
-        public static bool operator ==(Set<T> lhs, Set<T> rhs)
-        {
-            if (ReferenceEquals(null, lhs) || ReferenceEquals(null, rhs))
-                return false;
-
-            return lhs.Equals(rhs);
-        }
-
-        /// <summary>
-        /// Operator != overloading 
-        /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="rhs"></param>
-        /// <returns>False if <param name="rhs"></param> equals <param name="lhs"></param> </returns>
-        public static bool operator !=(Set<T> lhs, Set<T> rhs)
-        {
-            return !(lhs == rhs);
-        }
-
     }
 }
