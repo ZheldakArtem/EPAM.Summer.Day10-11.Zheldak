@@ -22,7 +22,10 @@ namespace Task2
             this._array = new T[DefaultCapacity];
             this._size = 0;
         }
-
+        /// <summary>
+        /// Adds an object to the end of the CustomQueue
+        /// </summary>
+        /// <param name="newElement"></param>
         public void Enqueue(T newElement)
         {
             _size++;
@@ -41,8 +44,14 @@ namespace Task2
             _array[0] = newElement;
         }
 
+        /// <summary>
+        /// Removes and returns the object at the beginning of the CustomQueue
+        /// </summary>
+        /// <returns>The object that is removed from the beginning of the CusotmQueue</returns>
         public T Dequeue()
         {
+            Queue<T> w = new Queue<T>();
+            w.Peek();
             if (this._size == 0)
             {
                 throw new InvalidOperationException();
@@ -53,6 +62,11 @@ namespace Task2
             return temp;
         }
 
+        /// <summary>
+        /// Returns the object at the beginning of the CustomQueue without removing it.
+        /// </summary>
+        /// <returns>
+        /// The object at the beginning of the</returns>
         public T Peek()
         {
             if (Count > 0)
@@ -60,6 +74,8 @@ namespace Task2
             throw new InvalidOperationException("Queue is empty.");
         }
 
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An object that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new QueueIterator(this);
@@ -80,6 +96,12 @@ namespace Task2
                 _currentIndex = -1;
             }
 
+            /// <summary>
+            /// Gets the current element in the collection.
+            /// </summary>
+            ///  <returns>
+            /// The current element in the collection.
+            /// </returns>
             public T Current
             {
                 get
@@ -107,6 +129,12 @@ namespace Task2
 
             }
 
+            /// <summary>
+            /// Advances the enumerator to the next element of the collection.
+            /// </summary>
+            ///  <returns>
+            /// true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.
+            /// </returns>
             public bool MoveNext()
             {
                 if (_currentIndex < _collection.Count - 1)
@@ -117,6 +145,9 @@ namespace Task2
                 return false;
             }
 
+            /// <summary>
+            /// Sets the enumerator to its initial position, which is before the first element in the collection.
+            /// </summary>
             public void Reset()
             {
                 _currentIndex = -1;

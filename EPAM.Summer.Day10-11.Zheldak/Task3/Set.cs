@@ -27,8 +27,10 @@ namespace Task3
             }
 
         }
-
-       
+        /// <summary>
+        /// Adds an item to collection
+        /// </summary>
+        /// <param name="elem">The object to add to the collection</param>
         public void Add(T elem)
         {
             if (_array.Any(item => item.Equals(elem)))
@@ -39,7 +41,10 @@ namespace Task3
             Array.Resize(ref _array, _array.Length + 1);
             _array[_array.Length - 1] = elem;
         }
-
+        /// <summary>
+        /// Removes element from a collection
+        /// </summary>
+        /// <param name="elem">Removing element</param>
         public void Remove(T elem)
         {
             T[] result = new T[_array.Length];
@@ -58,7 +63,9 @@ namespace Task3
 
             Array.Copy(result, _array, 0);
         }
-
+        /// <summary>
+        /// Removes all elements from a collection
+        /// </summary>
         public void Clear()
         {
             for (int i = 0; i < _array.Length; i++)
@@ -84,6 +91,10 @@ namespace Task3
             return new Set<T>(newArray);
         }
 
+        /// <summary>
+        /// Finds the intersection of two sets.
+        /// </summary>
+        /// <returns>Returns a new collection of type of set.</returns>
         public static Set<T> Intersection(Set<T> first, Set<T> second)
         {
             if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
@@ -106,6 +117,10 @@ namespace Task3
             return new Set<T>(tempArray);
         }
 
+        /// <summary>
+        /// Find the difference of two sets.
+        /// </summary>
+        /// <returns>Returns a new collection of type of set.</returns>
         public static Set<T> Difference(Set<T> first, Set<T> second)
         {
             if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
@@ -131,6 +146,9 @@ namespace Task3
             return new Set<T>(tempArray);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the set.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(Set<T> other)
         {
             if (ReferenceEquals(null, other) || other.Count != Count)
@@ -145,6 +163,9 @@ namespace Task3
             return true;
         }
 
+        /// <summary>Determines whether the specified object is equal to the set.</summary>
+        /// <returns>true if the specified object  is equal to the set; otherwise, false.</returns>
+        /// <param name="obj">The object to compare with the set. </param>
         public override bool Equals(object obj)
         {
 
@@ -158,8 +179,11 @@ namespace Task3
             return Equals(set);
         }
 
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An object that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator()
         {
+            int[] i;
             return ((IEnumerable<T>)_array).GetEnumerator();
         }
 
@@ -168,6 +192,8 @@ namespace Task3
             return GetEnumerator();
         }
 
+        /// <summary>Returns a string that represents the set.</summary>
+        /// <returns>A string that represents the set.</returns>
         public override string ToString()
         {
             if (ReferenceEquals(null, _array))
@@ -181,11 +207,19 @@ namespace Task3
             return result;
         }
 
+        /// <summary>Overriding functions which get hashcode. </summary>
+        /// <returns>A hash code of collection.</returns>
         public override int GetHashCode()
         {
             return _array.Sum(item => item.GetHashCode());
         }
 
+        /// <summary>
+        /// Operator == overloading 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns>True if <param name="rhs"></param> equals <param name="lhs"></param> </returns>
         public static bool operator ==(Set<T> lhs, Set<T> rhs)
         {
             if (ReferenceEquals(null, lhs) || ReferenceEquals(null, rhs))
@@ -194,6 +228,12 @@ namespace Task3
             return lhs.Equals(rhs);
         }
 
+        /// <summary>
+        /// Operator != overloading 
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns>False if <param name="rhs"></param> equals <param name="lhs"></param> </returns>
         public static bool operator !=(Set<T> lhs, Set<T> rhs)
         {
             return !(lhs == rhs);
