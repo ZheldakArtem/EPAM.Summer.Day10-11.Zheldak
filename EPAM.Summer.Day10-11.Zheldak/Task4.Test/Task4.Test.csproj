@@ -53,6 +53,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\EPAM.Summer.Day7.Zheldak\Task_Book\Task_Book\Task_Book.csproj">
+      <Project>{D240562A-785B-42E9-89A3-94DAE5AAAEA0}</Project>
+      <Name>Task_Book</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Task4\Task4.csproj">
       <Project>{92A3E7D9-6ABB-4567-BA05-FBF655D7B463}</Project>
       <Name>Task4</Name>
