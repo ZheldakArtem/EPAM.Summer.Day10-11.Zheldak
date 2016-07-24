@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Task5
 {
-    public class SquareMatrix<T> : ManrixBase<T>
+    /// <summary>
+    /// The class describing square matrix and work with it.
+    /// </summary>
+   public sealed class SquareMatrix<T> : BaseMatrix<T>
     {
 
         public SquareMatrix(T[,] array)
@@ -17,6 +20,13 @@ namespace Task5
                 throw new ArgumentException();
             _array = (T[,])array.Clone();
         }
+
+        /// <summary>
+        /// The index of the element to get or set
+        /// </summary>
+        /// <param name="i">index of row</param>
+        /// <param name="j">index of column</param>
+        /// <returns>Value an element of array wich have index[<param name="i"/>,<param name="j"/>] </returns>
         public override T this[int i, int j]
         {
             get
@@ -35,6 +45,9 @@ namespace Task5
             }
         }
 
+        /// <summary>
+        /// Get size of array
+        /// </summary>
         public override int Size => _array.GetLength(0);
     }
 }

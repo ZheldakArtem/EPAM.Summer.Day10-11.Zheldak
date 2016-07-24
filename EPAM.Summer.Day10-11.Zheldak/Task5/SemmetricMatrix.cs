@@ -6,18 +6,28 @@ using System.Threading.Tasks;
 
 namespace Task5
 {
-    public class SemetricMatrix<T> : ManrixBase<T>
+    /// <summary>
+    /// The class describing semmetric matrix and work with it.
+    /// </summary>
+    public sealed class SemmetricMatrix<T> : BaseMatrix<T>
     {
-        public SemetricMatrix(T[,] array)
+        public SemmetricMatrix(T[,] array)
         {
             if (ReferenceEquals(array, null))
                 throw new ArgumentNullException();
             if (!array.IsSquare())
                 throw new ArgumentException();
-            if (!array.IsSemetric())
+            if (!array.IsSemmetric())
                 throw new ArgumentException();
             _array = (T[,])array.Clone();
         }
+
+        /// <summary>
+        /// The index of the element to get or set
+        /// </summary>
+        /// <param name="i">index of row</param>
+        /// <param name="j">index of column</param>
+        /// <returns>Value an element of array wich have index[<param name="i"/>,<param name="j"/>] </returns>
         public override T this[int i, int j]
         {
             get
@@ -36,6 +46,9 @@ namespace Task5
             }
         }
 
+        /// <summary>
+        /// Get size of array
+        /// </summary>
         public override int Size => _array.GetLength(0);
     }
 }
