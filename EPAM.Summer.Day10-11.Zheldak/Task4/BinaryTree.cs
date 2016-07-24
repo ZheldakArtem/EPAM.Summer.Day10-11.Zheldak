@@ -14,7 +14,7 @@ namespace Task4
         private Node<TItem> _root;
         public BinaryTree() : this(Comparer<TItem>.Default)
         {
-
+            
         }
 
         public BinaryTree(IComparer<TItem> comparer)
