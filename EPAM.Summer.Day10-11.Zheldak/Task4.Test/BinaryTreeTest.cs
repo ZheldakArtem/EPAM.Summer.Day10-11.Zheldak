@@ -16,9 +16,9 @@ namespace Task4.Test
     {
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.IntDataPreorder))]
-        public void ThreeBypassingPreorderWhithDefaultComparer(int[] arrayCollection, int[] preorderArray)
+        public void TreeBypassingPreorderWhithDefaultComparer(int[] arrayCollection, int[] preorderArray)
         {
-            BinaryTree<int> tree = new BinaryTree<int>(arrayCollection);
+            var tree = new BinaryTree<int>(arrayCollection);
             var enumeratorTree = tree.GetEnumerator();
             var enumeratorPreorder = preorderArray.GetEnumerator();
 
@@ -29,9 +29,9 @@ namespace Task4.Test
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.IntDataComparer))]
-        public void ThreeWithIntComparer(int[] arrayCollection, IComparer<int> comparerInt, int[] resut)
+        public void TreeWithIntComparer(int[] arrayCollection, IComparer<int> comparerInt, int[] resut)
         {
-            BinaryTree<int> tree = new BinaryTree<int>(arrayCollection, comparerInt);
+            var tree = new BinaryTree<int>(arrayCollection, comparerInt);
             var enumeratorTree = tree.GetEnumerator();
             var enumeratorPreorder = resut.GetEnumerator();
 
@@ -42,9 +42,9 @@ namespace Task4.Test
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DataBook))]
-        public void ThreeWithBookPreorder(Book[] array, Book[] result)
+        public void TreeWithBookPreorder(Book[] array, Book[] result, IComparer<Book> comparer)
         {
-            BinaryTree<Book> tree = new BinaryTree<Book>(array);
+            var tree = new BinaryTree<Book>(array, comparer);
 
             var enumeratorBook = tree.GetEnumerator();
             var enumeratorResult = result.GetEnumerator();
@@ -53,10 +53,43 @@ namespace Task4.Test
                 Assert.AreEqual(enumeratorResult.Current, enumeratorBook.Current);
             }
         }
+
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.PointDataSource))]
+        public void TreeWithPointProvider(CustomPoint[] point, CustomPoint[] resultPoint, IComparer<CustomPoint> comparer)
+        {
+            var tree = new BinaryTree<CustomPoint>(point, comparer);
+            var pointCompare = new PointComparer();
+            var enumeratorBook = tree.Preorder().ToArray();
+            CollectionAssert.AreEqual(enumeratorBook, resultPoint, pointCompare);
+        }
     }
 
     public static class DataSource
     {
+        public static IEnumerable PointDataSource
+        {
+            get
+            {
+                yield return new TestCaseData(new CustomPoint[]
+          {
+                new CustomPoint(4,4),
+                new CustomPoint(7,7),
+                new CustomPoint(6,6),
+                new CustomPoint(1,1),
+                new CustomPoint(3,3),
+                new CustomPoint(2,2)
+          }, new CustomPoint[]
+          {
+                new CustomPoint(4,4),
+                new CustomPoint(1,1),
+                new CustomPoint(3,3),
+                new CustomPoint(2,2),
+                new CustomPoint(7,7),
+                new CustomPoint(6,6)
+          },
+          new PointComparer());
+            }
+        }
         public static IEnumerable IntDataPreorder
         {
             get { yield return new TestCaseData(new int[] { 7, 3, 10, 2, 5, 9, 13 }, new int[] { 7, 3, 2, 5, 10, 9, 13 }); }
@@ -88,7 +121,8 @@ namespace Task4.Test
                 new Book("CCC","CCC","CCC",333,111),
                 new Book("DDD","DDD","DDD",444,444),
                 new Book("EEE","EEE","EEE",555,555)
-          });
+          },
+          new BookComparer());
             }
         }
     }

@@ -45,7 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTreeTest.cs" />
+    <Compile Include="BookComparer.cs" />
+    <Compile Include="CustomPoint.cs" />
     <Compile Include="IntComparer.cs" />
+    <Compile Include="PointComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringComparer.cs" />
   </ItemGroup>
