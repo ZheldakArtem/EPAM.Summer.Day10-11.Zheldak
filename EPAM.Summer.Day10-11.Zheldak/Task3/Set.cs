@@ -12,7 +12,6 @@ namespace Task3
     public class Set<T> : IEnumerable<T> where T : class
     {
         private readonly IEqualityComparer<T> _equalityComparer;
-        private ISet<int> d=new HashSet<int>();
         private Hashtable _hashTable;
 
         public int Count => _hashTable.Count;
