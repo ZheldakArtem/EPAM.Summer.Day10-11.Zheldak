@@ -149,6 +149,14 @@ namespace Task4
         }
 
         /// <summary>
+        /// The method clear a tree.
+        /// </summary>
+        public void ClearTree()
+        {
+            _root = null;
+        }
+
+        /// <summary>
         /// Traversing the tree in preorder
         /// </summary>
         /// <returns>An enumerable that can be used to iterate through the collection.</returns>
