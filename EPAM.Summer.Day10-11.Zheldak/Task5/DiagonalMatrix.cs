@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace Task5
     /// </summary>
     public sealed class DiagonalMatrix<T> : BaseMatrix<T>
     {
-
+        private readonly T[] _array;
         public DiagonalMatrix(T[,] array)
         {
             if (ReferenceEquals(array, null))
@@ -20,7 +21,19 @@ namespace Task5
                 throw new ArgumentException();
             if (!array.IsDiagonal())
                 throw new ArgumentException();
-            _array = (T[,])array.Clone();
+            _array = new T[array.GetLength(0)];
+            Copy(array);
+        }
+
+        /// <summary>
+        /// Copies elements from an array to _array
+        /// </summary>
+        private void Copy(T[,] array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)
+                for (int j = 0; j < array.GetLength(0); j++)
+                    if (i == j)
+                        _array[i] = array[i, j];
         }
 
         /// <summary>
@@ -35,18 +48,37 @@ namespace Task5
             {
                 if (!IsIndex(i) || !IsIndex(j))
                     throw new ArgumentOutOfRangeException();
-                return _array[i, j];
+                return GetValue(i, j);
             }
             set
             {
                 if (!IsIndex(i) || !IsIndex(j))
                     throw new ArgumentOutOfRangeException();
-                var temp = _array[i, j];
-                _array[i, j] = value;
+                var temp = GetValue(i, j);
+                SetValue(i, j, value);
                 OnChange(this, new ChangeEventeArgs<T>(i, j, temp));
             }
         }
 
-        public override int Size => _array.GetLength(0);
+        public override int Size => _array.Length;
+
+        /// <summary>
+        /// Get value from matrix.
+        /// </summary>
+        protected override T GetValue(int i, int j)
+        {
+            if (i == j)
+                return _array[i];
+            return default(T);
+        }
+
+        /// <summary>
+        /// Set value to the matrix.
+        /// </summary>
+        protected override void SetValue(int i, int j, T value)
+        {
+            if (i != j) throw new InvalidOperationException();
+            _array[i] = value;
+        }
     }
 }

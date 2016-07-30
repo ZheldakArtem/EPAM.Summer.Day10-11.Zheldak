@@ -9,18 +9,23 @@ namespace Task5
     /// <summary>
     /// The class describing square matrix and work with it.
     /// </summary>
-   public sealed class SquareMatrix<T> : BaseMatrix<T>
+    public sealed class SquareMatrix<T> : BaseMatrix<T>
     {
-
+        private readonly T[,] _array;
         public SquareMatrix(T[,] array)
         {
             if (ReferenceEquals(array, null))
                 throw new ArgumentNullException();
             if (!array.IsSquare())
                 throw new ArgumentException();
-            _array = (T[,])array.Clone();
+            Copy(array);
         }
-
+        private void Copy(T[,] array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)
+                for (int j = 0; j < array.GetLength(0); j++)
+                    _array[i, j] = array[i, j];
+        }
         /// <summary>
         /// The index of the element to get or set
         /// </summary>
@@ -33,15 +38,15 @@ namespace Task5
             {
                 if (!IsIndex(i) || !IsIndex(j))
                     throw new ArgumentOutOfRangeException();
-                return _array[i, j];
+                return GetValue(i, j);
             }
             set
             {
                 if (!IsIndex(i) || !IsIndex(j))
                     throw new ArgumentOutOfRangeException();
                 var temp = _array[i, j];
-                _array[i, j] = value;
                 OnChange(this, new ChangeEventeArgs<T>(i, j, temp));
+                SetValue(i, j, value);
             }
         }
 
@@ -49,5 +54,21 @@ namespace Task5
         /// Get size of array
         /// </summary>
         public override int Size => _array.GetLength(0);
+
+        /// <summary>
+        /// Get value from matrix.
+        /// </summary>
+        protected override T GetValue(int i, int j)
+        {
+            return _array[i, j];
+        }
+
+        /// <summary>
+        /// Set value to the matrix.
+        /// </summary>
+        protected override void SetValue(int i, int j, T value)
+        {
+            _array[i, j] = value;
+        }
     }
 }

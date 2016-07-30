@@ -19,7 +19,7 @@ namespace Task5.Test
             {
                 var squareMatrix = new SquareMatrix<int>(squareArray);
                 var diagonalMatrix = new DiagonalMatrix<int>(diagonalArray);
-                var semetricalMatrix = new SemmetricMatrix<int>(semetricalArray);
+                var semetricalMatrix = new SymmetricMatrix<int>(semetricalArray);
                 Console.WriteLine(diagonalMatrix.ToString());
                 Console.WriteLine(semetricalMatrix.ToString());
                 var resultSum=semetricalMatrix.SumMatrix(diagonalMatrix, (a, b) => a + b);

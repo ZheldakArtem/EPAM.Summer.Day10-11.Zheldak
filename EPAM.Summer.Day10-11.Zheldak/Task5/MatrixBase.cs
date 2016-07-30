@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,7 +15,6 @@ namespace Task5
     /// <typeparam name="T">Type of object</typeparam>
     public abstract class BaseMatrix<T>
     {
-        protected T[,] _array;
         public event EventHandler<ChangeEventeArgs<T>> Changes = delegate { };
 
         /// <summary>
@@ -62,5 +63,18 @@ namespace Task5
             }
             return result.ToString();
         }
+
+        /// <summary>
+        /// Get value from matrix.
+        /// </summary>
+        protected abstract T GetValue(int i, int j);
+
+        /// <summary>
+        /// Set value to the matrix.
+        /// </summary>
+        protected abstract void SetValue(int i, int j, T value);
+
+        
+
     }
 }

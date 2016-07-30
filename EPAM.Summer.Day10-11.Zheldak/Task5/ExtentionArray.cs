@@ -59,20 +59,63 @@ namespace Task5
         /// <typeparam name="T">The type of elements in the matrix</typeparam>
         /// <param name="first">The first matrix</param>
         /// <param name="second">The second matrix</param>
-        /// <param name="sumFunc">The delegate which sums elements of matrix</param>
+        /// <param name="operationFunc">The delegate which sums elements of matrix</param>
         /// <returns></returns>
-        public static BaseMatrix<T> SumMatrix<T>(this BaseMatrix<T> first, BaseMatrix<T> second, Func<T, T, T> sumFunc)
+        public static BaseMatrix<T> SumMatrix<T>(this BaseMatrix<T> first, BaseMatrix<T> second, Func<T, T, T> operationFunc)
         {
             if (ReferenceEquals(first, null) || (ReferenceEquals(second, null)))
                 throw new ArgumentNullException();
             if (first.Size != second.Size)
                 throw new ArgumentException("Matrixes have a difference size");
-            var tempArr = new T[first.Size, first.Size];
-            for (int i = 0; i < first.Size; i++)
-                for (int j = 0; j < first.Size; j++)
-                    tempArr[i, j] = sumFunc(first[i, j], second[i, j]);
+            BaseMatrix<T> matrixResult;
 
-            return new SquareMatrix<T>(tempArr);
+            var size = first.Size;
+
+            if (second.GetType() == typeof(SquareMatrix<T>) || first.GetType() == typeof(SquareMatrix<T>))
+            {
+                matrixResult = new SquareMatrix<T>(new T[size,size]);
+            }
+            else if (second.GetType() == typeof(SquareMatrix<T>) || first.GetType() == typeof(SymmetricMatrix<T>))
+            {
+                matrixResult = new SquareMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(SymmetricMatrix<T>) || first.GetType() == typeof(SquareMatrix<T>))
+            {
+                matrixResult = new SquareMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(DiagonalMatrix<T>) || first.GetType() == typeof(SquareMatrix<T>))
+            {
+                matrixResult = new SquareMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(SquareMatrix<T>) || first.GetType() == typeof(DiagonalMatrix<T>))
+            {
+                matrixResult = new SquareMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(DiagonalMatrix<T>) || first.GetType() == typeof(SymmetricMatrix<T>))
+            {
+                matrixResult = new SymmetricMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(SymmetricMatrix<T>) || first.GetType() == typeof(DiagonalMatrix<T>))
+            {
+                matrixResult = new SymmetricMatrix<T>(new T[size, size]);
+            }
+            else if (second.GetType() == typeof(SymmetricMatrix<T>) || first.GetType() == typeof(SymmetricMatrix<T>))
+            {
+                matrixResult = new SymmetricMatrix<T>(new T[size, size]);
+            }
+            else
+            {
+                matrixResult = new DiagonalMatrix<T>(new T[size, size]);
+            }
+
+            for (var i = 0; i < size; i++)
+            {
+                for (var j = 0; j < size; j++)
+                {
+                    matrixResult[i, j] = operationFunc(first[i, j], second[i, j]);
+                }
+            }
+            return matrixResult;
         }
     }
 }

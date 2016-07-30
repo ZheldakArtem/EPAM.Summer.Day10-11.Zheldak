@@ -45,7 +45,7 @@
     <Compile Include="ExtentionArray.cs" />
     <Compile Include="MatrixBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SemmetricMatrix.cs" />
+    <Compile Include="SymmetricMatrix.cs" />
     <Compile Include="SquareMatrix.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
